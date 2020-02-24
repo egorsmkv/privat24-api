@@ -1,18 +1,21 @@
 # Privat24
 
+> Это форк проекта https://github.com/halt-avmc/p24api. Чтобы понять какие были изменения - смотрите файл CHANGELOG.md
+
 Это PHP API для мерчанта [Privat24](https://www.privat24.ua/).
 
 Инструкция по установке находится [здесь](https://github.com/halt-avmc/p24api/releases/latest).
 
 ## Использование
+
 Данная библиотека работает **_только_** совместно с [Composer](https://getcomposer.org/download/)'ом
 ```PHP
 <?php
-  require (vendor/autoload.php);
+  require __DIR__.'/vendor/autoload.php';
 
-  use halt\P24\Merchant
+  use halt\P24\Merchant;
 
-  $id = <Merchant Id>;
+  $id = 00000;
   $password = "<Merchant Password>";
 
   $merchant = new Merchant(['id'=>$id, 'password'=>$password]);
@@ -28,34 +31,41 @@
   $balance = $merchant->account($card)->balance();
   $info    = $merchant->account($card)->info();
 ?>
+
+
 ```
 Возвращаемые значения - это массив значений, которые описаны на сайте [API Приват24](https://api.privatbank.ua/#p24/balance)
 ### Баланс
+
 ```PHP
 $balance = [
-  'av_balance'   // Доступные средства. Это средства, которыми можно оперировать
-  'bal_date'     // Дата баланса
-  'bal_dyn'      // ?? - описание на сайте отсутсвует
-  'balance'      // Полный баланс. Сюда входят, в т.ч. средства, заблокированные на карте (HOLD)
-  'fin_limit'    // Кредитный лимит. Например на кредитной карте
+  'av_balance',   // Доступные средства. Это средства, которыми можно оперировать
+  'bal_date',     // Дата баланса
+  'bal_dyn',     // ?? - описание на сайте отсутсвует
+  'balance',     // Полный баланс. Сюда входят, в т.ч. средства, заблокированные на карте (HOLD)
+  'fin_limit',    // Кредитный лимит. Например на кредитной карте
   'trade_limit'  // ?? - описание на сайте отсутсвует
 ];
 ```
+
 ### Информация о карте/счёте
+
 ```PHP
 $info = [
-  'account'          // Счет карты
-  'acc_name'         // Название счёта ("Виртуальный счет Приват24")
-  'acc_type'         // Тип счёта  (CM, CC, ??)
-  'card_number'      // Номер карты
-  'main_card_number' // Номер основной карты
-  'card_type'        // Тип карты ("Карта для выплат")
-  'currency'         // Валюта (UAH, USD, EUR, ...)
-  'card_stat'        // Статус карты (NORM - всё ОК, RSTR - заблокирована, ??)
+  'account',          // Счет карты
+  'acc_name',         // Название счёта ("Виртуальный счет Приват24")
+  'acc_type',         // Тип счёта  (CM, CC, ??)
+  'card_number',      // Номер карты
+  'main_card_number', // Номер основной карты
+  'card_type',        // Тип карты ("Карта для выплат")
+  'currency',         // Валюта (UAH, USD, EUR, ...)
+  'card_stat',        // Статус карты (NORM - всё ОК, RSTR - заблокирована, ??)
   'src'              // ?? - описание на сайте отсутсвует (M)
 ];
 ```
+
 ## Ошибки
+
 Если во время запроса произошла ошибка, то в ответе вернётся не массив значений, а сообщение от банка с описанием ошибки:
 ```
 invalid signature

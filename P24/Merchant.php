@@ -2,78 +2,86 @@
 
 namespace halt\P24;
 
-use halt\P24\Account;
+class Merchant
+{
+    /** @var bool|integer The ID */
+    private $_id;
 
-class Merchant {
+    /** @var bool|string The password */
+    private $_password;
 
-  private $_id;
-  private $_password;
-  private $_test;
-  private $_wait;
+    /** @var bool Is it testing? */
+    private $_test;
 
-  private $_account = ['default'=>null];
+    // todo: add comment here
+    private $_wait;
 
-  /**
-   * @param  array $conf confiuration array for merchant. Keys 'id', 'password', 'test', 'wait'
-   * @return void
-   */
-   public function __construct($conf){
-     if(is_array($conf)){
-       $this->_id       = array_key_exists("id",       $conf) ? $conf['id']       : false;
-       $this->_password = array_key_exists("password", $conf) ? $conf['password'] : false;
-       $this->_test     = array_key_exists("test",     $conf) ? $conf['test']     : false;
-       $this->_wait     = array_key_exists("wait",     $conf) ? $conf['wait']     : 0;
-     }
-     $this->_account['default'] = new Account($this);
-   }
+    private $_account = ['default' => null];
 
-   public function id()
-   {
-     return $this->_id;
-   }
+    /**
+     * @param array $conf Configuration array for the merchant. Keys are 'id', 'password', 'test', 'wait'
+     *
+     * @return void
+     */
+    public function __construct($conf)
+    {
+        if (is_array($conf)) {
+            $this->_id = array_key_exists('id', $conf) ? $conf['id'] : false;
+            $this->_password = array_key_exists('password', $conf) ? $conf['password'] : false;
+            $this->_test = array_key_exists('test', $conf) ? $conf['test'] : false;
+            $this->_wait = array_key_exists('wait', $conf) ? $conf['wait'] : 0;
+        }
 
-   public function test()
-   {
-     return $this->_test;
-   }
+        $this->_account['default'] = new Account($this);
+    }
 
-   public function wait()
-   {
-     return $this->_wait;
-   }
+    public function id()
+    {
+        return $this->_id;
+    }
 
-   public function account($acc = null)
-   {
-     if (isset($acc) && !empty($acc))
-       return array_key_exists($acc, $this->_account) ? $this->_account[$acc] : $this->_account[$acc] = new Account($this, $acc);
-     else
-       return $this->_account['default'];
-   }
+    public function test()
+    {
+        return $this->_test;
+    }
 
-   /*
-    * Get balance of default merchant account
-    * @return array with info about current balance (See https://api.privatbank.ua/balance.html)
-    */
-   public function balance()
-   {
-     return $this->account()->balance();
-   }
-   
-   /*
-    * @void   Get info about default merchant account
-    * @return array with info about default account (See https://api.privatbank.ua/balance.html)
-    */
-   public function info()
-   {
-     return $this->account()->info();
-   }
+    public function wait()
+    {
+        return $this->_wait;
+    }
 
-   /*
-    * @string Data to sign
-    * @return calculated signature
-    */
-   public function calcSignature($data)
-   {
-     return sha1(md5($data.$this->_password));
-   }
+    public function account($acc = null)
+    {
+        if (isset($acc) && !empty($acc))
+            return array_key_exists($acc, $this->_account) ? $this->_account[$acc] : $this->_account[$acc] = new Account($this, $acc);
+        else
+            return $this->_account['default'];
+    }
+
+    /*
+     * Get balance of default merchant account
+     * @return array with info about current balance (See https://api.privatbank.ua/balance.html)
+     */
+    public function balance()
+    {
+        return $this->account()->balance();
+    }
+
+    /*
+     * @void   Get info about default merchant account
+     * @return array with info about default account (See https://api.privatbank.ua/balance.html)
+     */
+    public function info()
+    {
+        return $this->account()->info();
+    }
+
+    /*
+     * @string Data to sign
+     * @return calculated signature
+     */
+    public function calcSignature($data)
+    {
+        return sha1(md5($data . $this->_password));
+    }
 }
