@@ -1,10 +1,11 @@
 {
-  "name": "halt/p24",
-  "description": "Api for PrivatBank merchant",
+  "name": "egorsmkv/privat24-api",
+  "version": "0.2",
+  "description": "A library for working with the Privat24's Merchant API",
   "keywords": [
-    "P24",
-    "Privat24",
-    "Merchant"
+    "privat24",
+    "merchant",
+    "banking"
   ],
   "require": {
     "php": ">=5.5",
@@ -17,7 +18,7 @@
   "license": "GPL-3.0",
   "autoload": {
     "psr-4": {
-      "halt\\P24\\": "P24"
+      "Privat24\\": "src\\Privat24"
     }
   },
   "authors": [

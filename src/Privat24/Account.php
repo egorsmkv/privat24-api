@@ -1,6 +1,6 @@
 <?php
 
-namespace halt\P24;
+namespace Privat24;
 
 use GuzzleHttp\Client;
 use \SimpleXMLElement;
