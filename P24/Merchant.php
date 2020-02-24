@@ -16,14 +16,19 @@ class Merchant
     // todo: add comment here
     private $_wait;
 
-    private $_account = ['default' => null];
+    /**
+     * @var array Accounts of the merchant
+     */
+    private $_account = [
+        'default' => null,
+    ];
 
     /**
-     * @param array $conf Configuration array for the merchant. Keys are 'id', 'password', 'test', 'wait'
+     * Merchant constructor.
      *
-     * @return void
+     * @param array $conf Configuration array for the merchant. Required keys are 'id', 'password', 'test', 'wait'
      */
-    public function __construct($conf)
+    public function __construct(array $conf)
     {
         if (is_array($conf)) {
             $this->_id = array_key_exists('id', $conf) ? $conf['id'] : false;
@@ -35,50 +40,82 @@ class Merchant
         $this->_account['default'] = new Account($this);
     }
 
+    /**
+     * The merchant ID
+     *
+     * @return bool|int|mixed
+     */
     public function id()
     {
         return $this->_id;
     }
 
+    /**
+     * Is it a test merchant?
+     *
+     * @return bool|mixed
+     */
     public function test()
     {
         return $this->_test;
     }
 
+    // todo: add comment here
     public function wait()
     {
         return $this->_wait;
     }
 
+    /**
+     * Get an account by its name
+     *
+     * @param null|string $acc Account name
+     *
+     * @return Account|mixed
+     */
     public function account($acc = null)
     {
-        if (isset($acc) && !empty($acc))
-            return array_key_exists($acc, $this->_account) ? $this->_account[$acc] : $this->_account[$acc] = new Account($this, $acc);
-        else
-            return $this->_account['default'];
+        if (isset($acc) && !empty($acc)) {
+            if (array_key_exists($acc, $this->_account)) {
+                return $this->_account[$acc];
+            }
+
+            return new Account($this, $acc);
+        }
+
+        return $this->_account['default'];
     }
 
-    /*
+    /**
      * Get balance of default merchant account
-     * @return array with info about current balance (See https://api.privatbank.ua/balance.html)
+     *
+     * @see https://api.privatbank.ua/balance.html)
+     *
+     * @return array Info about current balance
      */
     public function balance()
     {
         return $this->account()->balance();
     }
 
-    /*
-     * @void   Get info about default merchant account
-     * @return array with info about default account (See https://api.privatbank.ua/balance.html)
+    /**
+     * Get info about default merchant account
+     *
+     * @see https://api.privatbank.ua/balance.html)
+     *
+     * @return array Info about the default account
      */
     public function info()
     {
         return $this->account()->info();
     }
 
-    /*
-     * @string Data to sign
-     * @return calculated signature
+    /**
+     * @string Convert data to signature
+     *
+     * @param string $data
+     *
+     * @return string A calculated signature
      */
     public function calcSignature($data)
     {

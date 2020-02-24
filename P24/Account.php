@@ -2,7 +2,7 @@
 
 namespace halt\P24;
 
-use Httpful\Request;
+use GuzzleHttp\Client;
 use \SimpleXMLElement;
 
 class Account
@@ -19,6 +19,9 @@ class Account
 
     protected $balance_uri = 'https://api.privatbank.ua/p24api/balance';
     protected $statements_uri = 'https://api.privatbank.ua/p24api/rest_fiz';
+
+    /** @var Client Http client */
+    private $_client;
 
     protected $balance = [
         'av_balance' => null,   // Доступные средства. Это средства, которыми можно оперировать
@@ -50,11 +53,19 @@ class Account
         'statement' => [],         // Массив движений по счёту
     ];
 
+    /**
+     * Account constructor.
+     *
+     * @param Merchant $merchant
+     * @param null|string $account
+     */
     public function __construct(Merchant $merchant, $account = null)
     {
         $this->merchant = $merchant;
         $this->info['card_number'] = $account;
         $this->status = self::STATUS_NEW;
+
+        $this->_client = new Client();
     }
 
     private function balanceXml()
